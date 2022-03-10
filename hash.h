@@ -44,3 +44,4 @@ int sbstr(int *hashes, int l, int r, int P){
     }
     return (int)(ans * inv(modpow(P, l)));
 }
+
