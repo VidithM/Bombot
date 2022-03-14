@@ -2,35 +2,52 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "hash.h"
+#include "trie.h"
 
-#define NWORDS 90000
-#define WORD_LEN (1 << 10)
+//#define DEBUG
+
+#define MAX_LEN (1 << 10)
 
 int main(){
     FILE *words_file;
     words_file = fopen("wordlist", "r");
-    char **words = (char**) malloc(NWORDS * sizeof(char*));
-    memset(words, 0, NWORDS * sizeof(char*));
 
     char c = fgetc(words_file);
     int curr_idx = 0;
-    int curr_word_idx = 0;
+    char *curr_word = (char*) malloc(MAX_LEN * sizeof(char));
+    init(&trie);
 
-    char *curr_word = (char*) malloc(WORD_LEN * sizeof(char));
+    char invalid = 0;
     while(c != EOF){
+#ifdef DEBUG
+        printf("At char: 0x%X\n", c);
+#endif
         if(c == '\n'){
-            for(int i = curr_word_idx; i < WORD_LEN; i++){
-                curr_word[i] = '$';
+            if(!invalid){
+                int len = curr_idx;
+                //printf("%d\n", len);
+                char* word = (char*) malloc(len * sizeof(char) + 1);
+                memcpy(word, curr_word, len);
+                word[len] = '\0';
+                for(int i = 0; i < len; i++){
+                    for(int j = i + 1; j < len; j++){
+                        char* put = (char*) malloc((j - i + 1) * sizeof(char));
+                        memcpy(put, curr_word + i, j - i + 1);
+                        insert_root(word, put, len);
+                    }
+                }
+            } else {
+#ifdef DEBUG
+                printf("discarding word\n");
+#endif
             }
-            char *put = (char*) malloc(WORD_LEN * sizeof(char));
-            memcpy(put, curr_word, WORD_LEN * sizeof(char));
-            words[curr_idx] = put;
-            curr_idx++;
-            curr_word_idx = 0;
+            invalid = 0;
+            curr_idx = 0;
+        } else if(c >= 0x61 && c <= 0x7a){
+           curr_word[curr_idx] = c;
+           curr_idx++;
         } else {
-            curr_word[curr_word_idx] = c;
-            curr_word_idx++;
+            invalid = 1;
         }
         c = fgetc(words_file);
     }
