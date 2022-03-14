@@ -1,6 +1,6 @@
 # WordBomb bot
 ## We do a litte trolling
-* I'm sick and tired of losing to my friends over wordbomb
+* I'm sick and tired of losing to my friends over [bomb party](https://jklm.fun)
 * Little do they now, this project is going to be a pwn machine and I will show them no mercy
 
 ## Version 1 (current, in progress)
