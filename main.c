@@ -84,4 +84,7 @@ int main(){
         c = fgetc(words_file);
     }
     print_str(use_root("?ulv", trie, 4));
+
+    start_server(8000);
+    connect_client();
 }
